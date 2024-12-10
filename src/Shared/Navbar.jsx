@@ -1,7 +1,19 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import logo from '../assets/image/logo.png'
+import AuthContext from '../Context/AuthContext/AuthContext';
 
 const Navbar = () => {
+  const {user,signOutUser} = useContext(AuthContext)
+  const handleSignOut = ()=>{
+    signOutUser()
+    .then(() =>{
+      console.log('signout Success')
+    })
+    .catch(error =>{
+      console.log('error', error)
+    })
+  }
     const links = <>
         <NavLink to={'/'}><li>Home</li></NavLink>
     </>
@@ -29,7 +41,10 @@ const Navbar = () => {
        {links}
       </ul>
     </div>
-    <NavLink to={'/'}><a className="btn btn-ghost text-xl">Dream Desk</a></NavLink>
+    <div className='flex w-10'>
+    <img src={logo} alt="" />
+    <Link to={'/'} className="btn btn-ghost text-xl">Dream Desk</Link>
+    </div>
   </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
@@ -37,9 +52,19 @@ const Navbar = () => {
     </ul>
   </div>
   <div className="navbar-end gap-4">
-    <NavLink to={'/register'}><h1 className="underline">Register</h1></NavLink>
-    <a className="btn">LogIn</a>
-  </div>
+  {
+    user? <>
+    <button onClick={handleSignOut} className='btn bg-red-600'>LogOut</button>
+    </>:
+    <>
+    <Link to="/register" className="underline">Register</Link>
+    <Link to="/login">
+    <button className="btn">LogIn</button>
+   </Link>
+    </>
+  }
+</div>
+
  </div>
     );
 };
