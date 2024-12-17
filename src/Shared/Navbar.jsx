@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/image/logo.png'
 import AuthContext from '../Context/AuthContext/AuthContext';
+import PrivateRoute from '../routes/PrivateRoute';
 
 const Navbar = () => {
   const {user,signOutUser} = useContext(AuthContext)
@@ -14,9 +15,14 @@ const Navbar = () => {
       console.log('error', error)
     })
   }
-    const links = <>
+    const links = <div className='lg:flex gap-4'>
         <NavLink to={'/'}><li>Home</li></NavLink>
-    </>
+        <PrivateRoute>
+        <NavLink to={'/addJob'}><li>add Job</li></NavLink>
+        <NavLink to={'/myApplication'}><li>My Applications</li></NavLink>
+        <NavLink to={'/myPostedJob'}><li>My Posted Job</li></NavLink>
+        </PrivateRoute>
+    </div>
     return (
 <div className="navbar">
   <div className="navbar-start">
@@ -54,10 +60,12 @@ const Navbar = () => {
   <div className="navbar-end gap-4">
   {
     user? <>
+    <img className='w-10 h-10 rounded-full' src={user.photoURL} alt="" />
     <button onClick={handleSignOut} className='btn bg-red-600'>LogOut</button>
     </>:
     <>
     <Link to="/register" className="underline">Register</Link>
+    
     <Link to="/login">
     <button className="btn">LogIn</button>
    </Link>

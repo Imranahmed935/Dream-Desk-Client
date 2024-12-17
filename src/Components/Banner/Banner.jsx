@@ -3,6 +3,8 @@ import pic1 from '../../assets/Banner/pic1.jpg'
 import pic2 from '../../assets/Banner/pic2.jpg'
 import { motion } from "motion/react"
 import { easeOut } from 'motion';
+import JobSlider from '../JobSlider/Jobslider';
+
 
 const Banner = () => {
     return (
@@ -13,12 +15,12 @@ const Banner = () => {
     animate={{ y: [30, 70, 30] }}
     transition={{duration:8, delay:1 , repeat:Infinity}}
       src={pic1}
-      className="max-w-sm border-l-8 border-b-8 border-green-200 rounded-t-3xl rounded-br-3xl" />
+      className="max-w-sm border-l-8 border-b-8 border-blue-400 rounded-t-3xl rounded-br-3xl" />
     <motion.img
     animate={{ x: [30, 80, 30] }}
     transition={{duration:8, delay:1 , repeat:Infinity}}
       src={pic2}
-      className="max-w-sm border-l-8 border-b-8 border-green-200 rounded-t-3xl rounded-br-3xl" />
+      className="max-w-sm border-l-8 border-b-8 border-blue-400 rounded-t-3xl rounded-br-3xl" />
     </div>
 
     <motion.div 
@@ -121,7 +123,15 @@ const Banner = () => {
     <i class="fas fa-search mr-2"></i> Search
   </button>
 </div>
-
+<div className='flex gap-2 mt-10'>
+  <h1 className='font-bold cursor-pointer'>Popular search: </h1>
+  <h1 className='underline cursor-pointer'>Designer</h1>
+  <h1 className='underline cursor-pointer'>Web</h1>
+  <h1 className='underline cursor-pointer'>ios</h1>
+  <h1 className='underline cursor-pointer'>Developer</h1>
+  <h1 className='underline cursor-pointer'>PHP</h1>
+</div>
+<JobSlider/>
 </div>
     );
 };

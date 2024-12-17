@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import AuthContext from './AuthContext';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword,GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import auth from '../../firebase/firebase.init';
+import axios from 'axios';
+
 
 
 const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null)
     const [Loading, setLoading] = useState(true)
+
+    const provider = new GoogleAuthProvider();
+
+    const handleGoogle = ()=>{
+        setLoading(true)
+        return signInWithPopup(auth, provider);
+    }
 
     const registerUser =(email, password)=>{
         setLoading(true)
@@ -26,8 +35,33 @@ const AuthProvider = ({children}) => {
     useEffect(()=>{
         const unsubscribe = onAuthStateChanged(auth, currentUser =>{
             setUser(currentUser);
-            console.log('captured user', currentUser)
-            setLoading(false)
+            console.log('captured user', currentUser?.email)
+            if(currentUser?.email){
+                const user = {email: currentUser.email}
+                axios.post('https://dream-desk-server.vercel.app/jwt', user, {withCredentials:true})
+                .then(res=> {
+                    console.log(res.data)
+                    setLoading(false)
+                })
+            }
+            else{
+                axios.post('https://dream-desk-server.vercel.app/logout', {},{withCredentials:true})
+                .then(res =>{
+                    console.log(res.data)
+                    setLoading(false)
+                })
+            }
+            // else{
+            //     axios.post('https://dream-desk-server.vercel.app/logout', {}, {withCredentials:true})
+            //     .then(res=> {
+            //         console.log('logout',res.data)
+            //         setLoading(false)
+
+            //     })
+            // }
+            
+
+            
         })
         return ()=>{
             unsubscribe()
@@ -40,7 +74,8 @@ const AuthProvider = ({children}) => {
         Loading,
         registerUser,
         logInUser,
-        signOutUser
+        signOutUser,
+        handleGoogle
     }
     return (
         <AuthContext.Provider value={authInfo}>

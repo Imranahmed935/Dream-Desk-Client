@@ -2,9 +2,14 @@ import Lottie from 'lottie-react';
 import React, { useContext } from 'react';
 import AuthContext from '../Context/AuthContext/AuthContext';
 import loginData from '../assets/login.json'
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LogIn = () => {
-    const {logInUser} = useContext(AuthContext)
+    const {logInUser, handleGoogle} = useContext(AuthContext)
+    const location = useLocation();
+    const navigate = useNavigate();
+    const from = location.state || '/'
   const handleLogin =(e)=>{
     e.preventDefault();
     const form = e.target;
@@ -12,11 +17,39 @@ const LogIn = () => {
     const password = form.password.value;
     logInUser(email, password)
     .then((result)=>{
-      console.log(result.user)
+      console.log(result.user.email)
+      const user = {email: email}
+      axios.post('https://dream-desk-server.vercel.app/jwt', user, {withCredentials:true})
+      .then(res =>{
+        console.log(res.data)
+      })
+      // const user = {email: email};
+      // axios.post('https://dream-desk-server.vercel.app/jwt', user, {withCredentials:true})
+      // .then(res => {
+      //   console.log(res.data)
+      // })
+      // const user = {email: email}
+      // axios.post('https://dream-desk-server.vercel.app/jwt', user, {withCredentials:true})
+      // .then(res => {
+      //   console.log(res.data)
+      // })
+      
+      navigate(from)
       form.reset()
     })
     .then((error)=>{
       console.log(error)
+    })
+  }
+
+  const loginGoogle =()=>{
+    handleGoogle()
+    .then(result =>{
+      console.log(result.user)
+      navigate(from)
+    })
+    .catch(error =>{
+      console.log('hello',error)
     })
   }
     return (
@@ -42,6 +75,9 @@ const LogIn = () => {
         </div>
         <div className="form-control mt-6">
           <button className="btn btn-primary">LogIn</button>
+        </div>
+        <div className="form-control mt-6">
+          <button onClick={loginGoogle} className="btn btn-accent">LogIn with google</button>
         </div>
       </form>
     </div>
